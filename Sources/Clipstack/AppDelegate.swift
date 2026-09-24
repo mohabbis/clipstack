@@ -229,10 +229,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, App
     private func installKeyMonitor() {
         removeKeyMonitor()
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            MainActor.assumeIsolated { () -> NSEvent? in
-                guard let self, event.window === self.popover.contentViewController?.view.window else { return event }
-                return self.handlePopoverKey(event) ? nil : event
+            // NSEvent isn't Sendable, so copy out the plain values before entering main-actor code.
+            let key = PopoverKey(event)
+            let handled = MainActor.assumeIsolated { () -> Bool in
+                guard let self, let window = key.window,
+                      window == self.popover.contentViewController?.view.window.map(ObjectIdentifier.init)
+                else { return false }
+                return self.handlePopoverKey(key)
             }
+            return handled ? nil : event
         }
     }
 
@@ -242,11 +247,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, App
     }
 
     /// Popover shortcuts. Focus stays in the search field, so navigation keys are routed here.
-    private func handlePopoverKey(_ event: NSEvent) -> Bool {
+    private func handlePopoverKey(_ key: PopoverKey) -> Bool {
         let results = popoverState.results(in: history)
-        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        let flags = key.modifierFlags
 
-        switch Int(event.keyCode) {
+        switch Int(key.keyCode) {
         case 125: // ↓
             popoverState.moveSelection(by: 1, in: results)
             return true
@@ -278,12 +283,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, App
         }
 
         // ⌘1 … ⌘9 copy the nth visible item.
-        if flags == .command, let chars = event.charactersIgnoringModifiers,
+        if flags == .command, let chars = key.characters,
            let digit = Int(chars), (1...9).contains(digit) {
             if results.indices.contains(digit - 1) { copyFromPopover(results[digit - 1]) }
             return true
         }
         return false
+    }
+
+    /// The parts of a key-down event the popover needs, as Sendable values.
+    private struct PopoverKey: Sendable {
+        let keyCode: UInt16
+        let modifierFlags: NSEvent.ModifierFlags
+        let characters: String?
+        let window: ObjectIdentifier?
+
+        init(_ event: NSEvent) {
+            keyCode = event.keyCode
+            modifierFlags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            characters = event.charactersIgnoringModifiers
+            window = event.window.map(ObjectIdentifier.init)
+        }
     }
 
     // MARK: - AppActions
