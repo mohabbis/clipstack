@@ -6,7 +6,7 @@
 #   UNIVERSAL=1 scripts/build-app.sh # arm64 + x86_64
 #   SIGN_IDENTITY="Developer ID Application: …" scripts/build-app.sh
 #
-# Output: build/Clipstack.app
+# Output: build/Clipstack.app and build/Clipstack.zip
 set -euo pipefail
 
 if [[ "$(uname)" != "Darwin" ]]; then
@@ -41,5 +41,11 @@ codesign --force --options runtime --timestamp=none \
   --sign "$IDENTITY" "$APP"
 codesign --verify --strict --verbose=1 "$APP"
 
+# Zip for distribution. ditto keeps the bundle's signature and extended attributes intact.
+ZIP="$ROOT/build/Clipstack.zip"
+rm -f "$ZIP"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
+
 echo "==> Done: $APP"
 echo "    Run it with: open \"$APP\""
+echo "    Release asset: $ZIP (upload to a GitHub release as 'Clipstack.zip')"
