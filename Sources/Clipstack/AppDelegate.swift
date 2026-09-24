@@ -101,11 +101,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, App
         withObservationTracking {
             _ = history.settings
         } onChange: { [weak self] in
-            DispatchQueue.main.async {
-                MainActor.assumeIsolated {
-                    self?.applySettings()
-                    self?.observeSettings()
-                }
+            let app = self
+            Task { @MainActor in
+                guard let app else { return }
+                app.applySettings()
+                app.observeSettings()
             }
         }
     }
