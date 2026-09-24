@@ -3,6 +3,7 @@ import ClipstackCore
 import SwiftUI
 
 /// A larger window for browsing: list on the left, full preview and metadata on the right.
+@MainActor
 struct HistoryWindowView: View {
     let history: ClipboardHistory
     @Bindable var state: BrowserState
@@ -101,6 +102,7 @@ struct HistoryWindowView: View {
 }
 
 /// Full preview of one item.
+@MainActor
 struct ItemDetailView: View {
     let history: ClipboardHistory
     let item: ClipItem?

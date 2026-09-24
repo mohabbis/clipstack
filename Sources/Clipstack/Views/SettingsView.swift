@@ -4,6 +4,7 @@ import ClipstackCore
 import ServiceManagement
 import SwiftUI
 
+@MainActor
 struct SettingsView: View {
     let history: ClipboardHistory
     let status: AppStatus
@@ -33,6 +34,7 @@ private func settingBinding<T>(_ history: ClipboardHistory, _ keyPath: WritableK
 
 // MARK: - General
 
+@MainActor
 private struct GeneralSettings: View {
     let history: ClipboardHistory
     let status: AppStatus
@@ -104,6 +106,7 @@ private struct GeneralSettings: View {
 
 // MARK: - Privacy
 
+@MainActor
 private struct PrivacySettings: View {
     let history: ClipboardHistory
 
@@ -194,6 +197,7 @@ private struct PrivacySettings: View {
     }
 }
 
+@MainActor
 private struct ExcludedAppRow: View {
     let bundleID: String
     let remove: () -> Void
@@ -238,6 +242,7 @@ private struct ExcludedAppRow: View {
 
 // MARK: - Storage
 
+@MainActor
 private struct StorageSettings: View {
     let history: ClipboardHistory
     let actions: AppActions

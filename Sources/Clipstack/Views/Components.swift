@@ -4,6 +4,7 @@ import ClipstackCore
 import SwiftUI
 
 /// One history entry. Text and image items share a layout but differ in their leading tile.
+@MainActor
 struct ClipRow: View {
     let item: ClipItem
     let thumbnailURL: URL?
@@ -109,6 +110,7 @@ struct ClipRow: View {
 }
 
 /// Small type label: "Text" or "Image", tinted differently so the two kinds scan apart.
+@MainActor
 struct KindBadge: View {
     let kind: ClipKind
 
@@ -127,6 +129,7 @@ struct KindBadge: View {
 }
 
 /// Loads a stored thumbnail PNG, with an in-memory cache.
+@MainActor
 struct ThumbnailView: View {
     let url: URL?
 
@@ -162,6 +165,7 @@ final class ThumbnailCache {
     }
 }
 
+@MainActor
 struct EmptyStateView: View {
     let symbol: String
     let title: String
@@ -217,6 +221,7 @@ extension EmptyStateView {
 }
 
 /// Search field styled for compact utility windows.
+@MainActor
 struct SearchField: View {
     @Binding var text: String
     var prompt = "Search"
@@ -254,6 +259,7 @@ struct SearchField: View {
 }
 
 /// Recording / Paused indicator with a one-click toggle. Kept visible in both windows.
+@MainActor
 struct CaptureStatusControl: View {
     let history: ClipboardHistory
 
@@ -279,6 +285,7 @@ struct CaptureStatusControl: View {
 }
 
 /// Content-free status messages from the history (skipped items, storage errors).
+@MainActor
 struct NoticeBanner: View {
     let notice: HistoryNotice
     let dismiss: () -> Void
@@ -305,6 +312,7 @@ struct NoticeBanner: View {
 }
 
 /// Orange strip shown while capture is paused, so the state is hard to miss.
+@MainActor
 struct PausedBanner: View {
     var body: some View {
         HStack(spacing: 6) {

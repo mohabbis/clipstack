@@ -3,6 +3,7 @@ import ClipstackCore
 import SwiftUI
 
 /// The compact menu-bar popover: search, filter, recent items and capture status.
+@MainActor
 struct PopoverView: View {
     static let size = NSSize(width: 360, height: 480)
 
