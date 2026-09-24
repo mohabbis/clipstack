@@ -42,16 +42,9 @@ codesign --force --options runtime --timestamp=none \
 codesign --verify --strict --verbose=1 "$APP"
 
 # Zip for distribution. ditto keeps the bundle's signature and extended attributes intact.
-# The note sits beside the app so website downloads explain the Gatekeeper dialog.
-DIST="$ROOT/build/Clipstack-dist"
-rm -rf "$DIST"
-mkdir -p "$DIST"
-ditto "$APP" "$DIST/Clipstack.app"
-cp "$ROOT/Resources/How-to-open.txt" "$DIST/How to open Clipstack.txt"
 ZIP="$ROOT/build/Clipstack.zip"
 rm -f "$ZIP"
-ditto -c -k --sequesterRsrc "$DIST" "$ZIP"
-rm -rf "$DIST"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
 echo "==> Done: $APP"
 echo "    Run it with: open \"$APP\""
