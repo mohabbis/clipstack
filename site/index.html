@@ -118,6 +118,11 @@
     background: var(--bg-alt); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
   }
   .os-note.show { display: block; }
+  .gate-note {
+    margin: 14px 0 0; max-width: 36em; font-size: 14px; line-height: 1.45; color: var(--muted);
+    background: var(--bg-alt); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
+  }
+  .final .gate-note { margin-left: auto; margin-right: auto; }
 
   /* Popover mock */
   .stage { position: relative; display: flex; justify-content: center; }
@@ -218,6 +223,23 @@
   }
   .steps h3 { margin: 3px 0 4px; font-size: 17px; }
   .steps p { margin: 0; color: var(--muted); font-size: 15px; }
+  .steps p + p { margin-top: 8px; }
+  #first-open { scroll-margin-top: 80px; }
+  .gatekeeper {
+    margin: 12px 0; width: 100%; max-width: 320px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(20, 30, 60, .10); padding: 16px 16px 14px; text-align: center;
+  }
+  .gatekeeper .gk-icon { width: 36px; height: 36px; margin: 2px auto 8px; display: block; }
+  .gatekeeper .gk-title { margin: 0 0 6px; font-size: 14px; font-weight: 650; color: var(--text); }
+  .gatekeeper .gk-body { margin: 0 0 12px; font-size: 12px; line-height: 1.4; color: var(--muted); }
+  .gk-actions { display: grid; gap: 6px; }
+  .gk-actions span {
+    display: block; border-radius: 8px; padding: 6px 10px; font-size: 13px; font-weight: 600;
+    background: var(--bg-alt); color: var(--text); border: 1px solid var(--border);
+  }
+  .gk-actions .gk-done { background: var(--accent); color: #fff; border-color: transparent; }
+  @media (prefers-color-scheme: dark) { .gk-actions .gk-done { color: #0b1020; } }
   .install { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; }
   pre.term {
     margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.65;
@@ -300,6 +322,7 @@
           </a>
         </div>
         <p class="fine">For macOS 14 or later · No account · No network access</p>
+        <p class="gate-note">The first time you open a download, macOS shows <strong>“Clipstack” Not Opened</strong>. Click <strong>Done</strong>, then <a href="#first-open">allow it in Privacy &amp; Security</a>.</p>
         <p class="os-note" id="os-note" role="note">Clipstack is a Mac app. You can download it here and move it to your Mac, or come back to this page from your Mac.</p>
       </div>
 
@@ -455,7 +478,15 @@
         <ol class="steps">
           <li><div><h3>Download and unzip</h3><p><a class="js-download" href="https://github.com/mohabbis/clipstack/releases/latest/download/Clipstack.zip">Download Clipstack.zip</a>, then double-click it to unzip it.</p></div></li>
           <li><div><h3>Move it to Applications</h3><p>Drag <strong>Clipstack.app</strong> into your Applications folder.</p></div></li>
-          <li><div><h3>Open it the first time</h3><p>Clipstack isn't notarized by Apple yet, so macOS asks before opening it. Open it once, then go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>. On macOS 14 you can instead Control-click the app and choose <strong>Open</strong>.</p></div></li>
+          <li id="first-open"><div><h3>Allow the first open</h3><p>Clipstack isn't notarized by Apple yet, so the first time you open the download macOS blocks it. The dialog is titled <strong>“Clipstack” Not Opened</strong> and says Apple could not verify Clipstack is free of malware. The app does not launch from that dialog.</p>
+            <div class="gatekeeper" aria-hidden="true">
+              <svg class="gk-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 3.5 6.5 7.2v8.1c0 6.2 3.9 10.4 9.5 13.2 5.6-2.8 9.5-7 9.5-13.2V7.2L16 3.5Z" fill="#e8890c"/><path d="M16 10.2v6.2" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="20.2" r="1.2" fill="#fff"/></svg>
+              <p class="gk-title">“Clipstack” Not Opened</p>
+              <p class="gk-body">Apple could not verify “Clipstack” is free of malware that may harm your Mac or compromise your privacy.</p>
+              <div class="gk-actions"><span>Move to Trash</span><span class="gk-done">Done</span></div>
+            </div>
+            <p>Click <strong>Done</strong>. Moving it to the Trash deletes the app you just downloaded. Then open <strong>System Settings → Privacy &amp; Security</strong>, scroll to Security, and click <strong>Open Anyway</strong> next to Clipstack. Enter your password, and when macOS asks if you're sure, click <strong>Open</strong>. You only do this once.</p>
+            <p>On macOS 14 Sonoma, Control-click Clipstack.app and choose <strong>Open</strong>. On macOS 15 and later, Privacy &amp; Security is the way through.</p></div></li>
           <li><div><h3>Find it in your menu bar</h3><p>Clipstack has no Dock icon. Click the clipboard icon at the top of your screen, or press <kbd>⌃</kbd><kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd>.</p></div></li>
         </ol>
         <div>
@@ -498,6 +529,10 @@ open build/Clipstack.app</pre>
         <p>Choose Clear History from the ⋯ menu or in Settings → Storage. That deletes all stored text and images. To uninstall, quit Clipstack and move it to the Trash.</p>
       </details>
       <details>
+        <summary>macOS says “Clipstack” Not Opened. What do I do?</summary>
+        <p>Click <strong>Done</strong> on that dialog. Then open <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong> next to Clipstack. Confirm with your password and click <strong>Open</strong>. Apple shows this because the download isn't notarized yet. Clipstack is <a href="https://github.com/mohabbis/clipstack">open source</a>, and you only see the dialog the first time. The <a href="#first-open">install steps</a> walk through it.</p>
+      </details>
+      <details>
         <summary>Is it free?</summary>
         <p>Yes. Clipstack is free, and its source code is <a href="https://github.com/mohabbis/clipstack">on GitHub</a>.</p>
       </details>
@@ -514,6 +549,7 @@ open build/Clipstack.app</pre>
           Download for Mac
         </a>
       </div>
+      <p class="gate-note">The first time you open a download, macOS shows <strong>“Clipstack” Not Opened</strong>. Click <strong>Done</strong>, then <a href="#first-open">allow it in Privacy &amp; Security</a>.</p>
       <p class="fine"><a href="https://github.com/mohabbis/clipstack/releases">All releases and release notes</a></p>
     </div>
   </section>

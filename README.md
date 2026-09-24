@@ -53,8 +53,12 @@ only after a published GitHub release includes an asset named exactly `Clipstack
 2. Open the built app and check that it works.
 3. Create a GitHub release (for example tag `v0.1.0`) and upload `build/Clipstack.zip` as its asset.
 
-An ad-hoc-signed build isn't notarized, so on first launch macOS asks users to approve it in
-**System Settings → Privacy & Security → Open Anyway**. The website's install steps explain this.
+An ad-hoc-signed build isn't notarized. People who download it see macOS's
+**“Clipstack” Not Opened** dialog, with **Move to Trash** and **Done**. The website's
+install steps tell them to click **Done**, then **System Settings → Privacy & Security →
+Open Anyway**. The zip also includes `How to open Clipstack.txt` with the same steps.
+On macOS 14, Control-click → **Open** still works. On macOS 15 and later, Privacy & Security
+is the way through.
 To remove that step, sign with a Developer ID (`SIGN_IDENTITY=…`) and notarize the zip with
 `xcrun notarytool submit build/Clipstack.zip --wait`. For a zipped app you can't staple the
 ticket; Gatekeeper checks it online on first launch.

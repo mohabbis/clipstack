@@ -1,0 +1,24 @@
+How to open Clipstack
+
+macOS shows “Clipstack” Not Opened the first time you open this download.
+Apple says it could not verify Clipstack is free of malware. That dialog
+appears because this build is not notarized yet. The app does not launch
+from it.
+
+1. Unzip Clipstack.zip.
+2. Drag Clipstack.app into your Applications folder.
+3. Double-click Clipstack. When macOS shows “Clipstack” Not Opened, click
+   Done. Move to Trash deletes the app you just downloaded.
+4. Open System Settings → Privacy & Security.
+5. Scroll to Security and click Open Anyway next to Clipstack.
+6. Enter your password. When macOS asks if you're sure, click Open.
+
+You only do this once.
+
+On macOS 14 Sonoma, you can Control-click Clipstack.app and choose Open.
+On macOS 15 and later, use Privacy & Security as above.
+
+Clipstack has no Dock icon. After it opens, click the clipboard icon in
+the menu bar, or press Control-Option-Command-V.
+
+Source: https://github.com/mohabbis/clipstack
