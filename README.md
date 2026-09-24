@@ -43,6 +43,28 @@ folder (see below), and can't register itself as a login item.
 
 On Linux, only `ClipstackCore` and its tests are built. The app target compiles to a stub.
 
+## Releasing
+
+The website's **Download for Mac** button links to
+`https://github.com/mohabbis/clipstack/releases/latest/download/Clipstack.zip`. That link works
+only after a published GitHub release includes an asset named exactly `Clipstack.zip`.
+
+1. On a Mac, run `UNIVERSAL=1 scripts/build-app.sh`. It writes `build/Clipstack.app` and `build/Clipstack.zip`.
+2. Open the built app and check that it works.
+3. Create a GitHub release (for example tag `v0.1.0`) and upload `build/Clipstack.zip` as its asset.
+
+An ad-hoc-signed build isn't notarized, so on first launch macOS asks users to approve it in
+**System Settings → Privacy & Security → Open Anyway**. The website's install steps explain this.
+To remove that step, sign with a Developer ID (`SIGN_IDENTITY=…`) and notarize the zip with
+`xcrun notarytool submit build/Clipstack.zip --wait`. For a zipped app you can't staple the
+ticket; Gatekeeper checks it online on first launch.
+
+## Website
+
+`site/index.html` is the landing page, deployed by Vercel from this repository. `vercel.json`
+serves the `site/` folder as static files, with no build step, and sets strict security headers.
+The page loads no external resources and uses no cookies or analytics.
+
 ## Using Clipstack
 
 | Action | How |
