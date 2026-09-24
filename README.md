@@ -49,15 +49,34 @@ The website's **Download for Mac** button links to
 `https://github.com/mohabbis/clipstack/releases/latest/download/Clipstack.zip`. That link works
 only after a published GitHub release includes an asset named exactly `Clipstack.zip`.
 
-1. On a Mac, run `UNIVERSAL=1 scripts/build-app.sh`. It writes `build/Clipstack.app` and `build/Clipstack.zip`.
-2. Open the built app and check that it works.
-3. Create a GitHub release (for example tag `v0.1.0`) and upload `build/Clipstack.zip` as its asset.
+Pushing a `v*` tag runs `.github/workflows/release.yml` on a Mac runner. It builds a universal
+app, signs it with the Developer ID certificate in GitHub Actions secrets, notarizes it, and
+uploads `Clipstack.zip` to that release. The website download uses that asset. A notarized
+build opens without the “Clipstack” Not Opened dialog.
 
-An ad-hoc-signed build isn't notarized, so on first launch macOS asks users to approve it in
-**System Settings → Privacy & Security → Open Anyway**. The website's install steps explain this.
-To remove that step, sign with a Developer ID (`SIGN_IDENTITY=…`) and notarize the zip with
-`xcrun notarytool submit build/Clipstack.zip --wait`. For a zipped app you can't staple the
-ticket; Gatekeeper checks it online on first launch.
+Secrets, under **Settings → Secrets and variables → Actions**:
+
+| Secret | What it is |
+| --- | --- |
+| `APPLE_CERTIFICATE_P12` | Base64 of a **Developer ID Application** `.p12` exported from Keychain Access |
+| `APPLE_CERTIFICATE_PASSWORD` | Password for that `.p12` |
+| `APPLE_API_KEY_ID` | App Store Connect API key id |
+| `APPLE_API_ISSUER_ID` | Issuer id shown next to the key |
+| `APPLE_API_KEY_P8` | Contents of the `AuthKey_….p8` file |
+
+The certificate has to be Developer ID Application, not Apple Development or Mac App Store.
+The API key needs a role that can notarize (Developer or Admin).
+
+To notarize on your own Mac instead of CI:
+
+```sh
+UNIVERSAL=1 \
+  SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
+  APPLE_API_KEY_ID="…" \
+  APPLE_API_ISSUER_ID="…" \
+  APPLE_API_KEY_PATH="/path/to/AuthKey.p8" \
+  scripts/build-app.sh
+```
 
 ## Website
 
